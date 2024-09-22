@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = "sqlserver://ILYA_COMPUTER;database=PSKP_LAB8;user=ILYA;password=bkmz;integratedSecurity=false;trustServerCertificate=true;connection_limit=10;connectTimeout=10;poolTimeout=10"
+}
+
+model commits {
+  id      Int     @id @default(autoincrement())
+  message String?
+  repoid  Int
+  repos   repos   @relation(fields: [repoid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model repos {
+  id       Int       @id @default(autoincrement())
+  name     String?
+  authorid Int
+  commits  commits[]
+  users    users     @relation(fields: [authorid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model users {
+  id       Int     @id @default(autoincrement())
+  username String
+  password String
+  email    String
+  role     String
+  repos    repos[]
+}

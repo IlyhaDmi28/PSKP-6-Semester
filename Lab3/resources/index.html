@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Lab3</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+</head>
+
+<body>
+        <div style="width: 40%; margin-top: 30px;">
+            
+            <div style="margin-top: 30px;">
+                <button type="button" id="previous_page">&laquo;</button>
+                <button type="button" id="next_page">&raquo;</button>
+            </div>
+        </div>
+
+        <div id="result" style="width: 50%; margin-top: 7%;"></div>
+        <div id="page_numb"></div>
+</body>
+
+<script>
+    let page = 0;
+    const baseUrl = '/api/pulpits';
+    const result = document.getElementById("result");
+
+
+    $("#next_page").click(function get() {
+        page++;
+        page_numb.innerHTML = page + 1;
+        fetch(baseUrl)
+        .then(responce => responce.json())
+        .then(responseText => {
+            if(page * 10 + 10 > responseText.length ) {
+                result.innerHTML =
+                '<pre>' +
+                    JSON.stringify(responseText.slice(page * 10,  responseText.length), null, 4) +
+                '</pre>';
+            }
+            else {
+            result.innerHTML =
+                '<pre>' +
+                    JSON.stringify(responseText.slice(page * 10, page * 10 + 10), null, 4) +
+                '</pre>';
+            }
+        });
+    });
+
+    $("#previous_page").click(function get() {
+        if(page > 0) page--;
+        page_numb.innerHTML = page + 1;
+        fetch(baseUrl)
+        .then(responce => responce.json())
+        .then(responseText => {
+            if(page * 10 + 10 > responseText.length ) {
+                result.innerHTML =
+                '<pre>' +
+                    JSON.stringify(responseText.slice(page * 10,  responseText.length), null, 4) +
+                '</pre>';
+            }
+            else {
+            result.innerHTML =
+                '<pre>' +
+                    JSON.stringify(responseText.slice(page * 10, page * 10 + 10), null, 4) +
+                '</pre>';
+            }
+        });
+    });
+</script>
+
+</html>

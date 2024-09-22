@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Lab2</title>
+</head>
+
+<body>
+        <div style="width: 40%; margin-top: 30px;">
+            <div >
+                <label for="teacher">Teacher:</label>
+                <input type="text" name="teacher" id="input_teacher" style="margin-left: 38px;">
+            </div>
+
+            <div style="margin-top: 10px;">
+                <label for="teacher_name">Teacher name:</label>
+                <input type="text" name="teacher_name" id="input_teacher_name">
+            </div>
+
+            <div style="margin-top: 10px;">
+                <label for="pulpit">Pulpit:</label>
+                <input type="text" name="pulpit" id="input_pulpit" style="margin-left: 51px;">
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button type="button" id="get">GET</button>
+                <button type="button" id="post">POST</button>
+                <button type="button" id="put">PUT</button>
+                <button type="button" id="delete">DELETE</button>
+            </div>
+        </div>
+
+        <div id="result" style="width: 50%; margin-top: 7%;"></div>
+</body>
+
+<script>
+    const baseUrl = '/api/teachers';
+    const result = document.getElementById("result");
+
+
+    $("#get").click(function get() {
+        fetch(baseUrl)
+            .then(responce => responce.json())
+            .then(responseText => {
+                result.innerHTML =
+                    '<pre>' +
+                        JSON.stringify(responseText, null, 4) +
+                    '</pre>';
+            });
+    });
+
+
+    $("#post").click(function post() {
+        const data = {
+            TEACHER: $("#input_teacher").val(),
+            TEACHER_NAME: $("#input_teacher_name").val(),
+            PULPIT: $("#input_pulpit").val()
+        }
+
+        if (data.teacher == '' || data.teacher_name == '' || data.pulpit == '') {
+            result.innerHTML = 'Поля не заполнены!';
+            return;
+        }
+
+        fetch(baseUrl, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.headers.get('Content-Type') === 'application/json' ? response.json() : response.text())
+        .then(responseText => {
+            console.log(typeof responseText);
+            if (typeof responseText === 'object') {
+                result.innerHTML =
+                '<pre>' +
+                    JSON.stringify(responseText, null, 4) +
+                '</pre>';
+            }
+            else { 
+                result.innerHTML = responseText;
+            }
+        })
+    });
+
+
+    $("#put").click(function post() {
+        const data = {
+            TEACHER: $("#input_teacher").val(),
+            TEACHER_NAME: $("#input_teacher_name").val(),
+            PULPIT: $("#input_pulpit").val()
+        }
+        if (data.teacher == '' || data.teacher_name == '' || data.pulpit == '') {
+            result.innerHTML = 'Поля не заполнены!';
+            return;
+        }
+
+        fetch(baseUrl, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.headers.get('Content-Type') === 'application/json' ? response.json() : response.text())
+        .then(responseText => {
+            if (typeof responseText === 'object') {
+                result.innerHTML =
+                '<pre>' +
+                    JSON.stringify(responseText, null, 4) +
+                '</pre>';
+            }
+            else { 
+                result.innerHTML = responseText;
+            }
+        })
+        
+    });
+
+
+    $("#delete").click(function post() {
+        const teacher = $("#input_teacher").val();
+        if (teacher == '') {
+            result.innerHTML = 'Поля не заполнены!';
+            return;
+        }
+
+        fetch(baseUrl + '/' + teacher, {
+            method: 'DELETE',
+        })
+        .then(response => response.text())
+        .then(responseText => {
+            result.innerHTML = responseText;
+        });
+    })
+</script>
+
+</html>

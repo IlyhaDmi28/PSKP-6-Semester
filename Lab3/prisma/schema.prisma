@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+
+model faculty {
+    faculty      String   @id @db.Char(10)
+    faculty_name String?  @db.VarChar(50)
+    pulpitRef    pulpit[]
+
+    @@map("faculty")
+}
+
+model pulpit {
+    pulpit      String    @id @db.Char(10)
+    pulpit_name String?   @db.VarChar(100)
+    faculty     String    @db.Char(10)
+    facultyRef  faculty   @relation(fields: [faculty], references: [faculty])
+    subjectRef  subject[]
+    teacherRef  teacher[]
+
+    @@map("pulpit")
+}
+
+model subject {
+    subject      String @id @db.Char(10)
+    subject_name String @db.VarChar(50)
+    pulpit       String @db.Char(10)
+    pulpitRef    pulpit @relation(fields: [pulpit], references: [pulpit])
+
+    @@map("subject")
+}
+
+model teacher {
+    teacher      String  @id @db.Char(10)
+    teacher_name String? @db.VarChar(50)
+    pulpit       String  @db.Char(10)
+    pulpitRef    pulpit  @relation(fields: [pulpit], references: [pulpit])
+
+    @@map("teacher")
+}
+
+model auditoriumType {
+    auditorium_type     String       @id @db.Char(10)
+    auditorium_typename String       @db.VarChar(30)
+    auditoriumRef       auditorium[]
+
+    @@map("auditorium_type")
+}
+
+model auditorium {
+    auditorium          String         @id @db.Char(10)
+    auditorium_name     String?        @db.VarChar(200)
+    auditorium_capacity Int?
+    auditorium_type     String         @db.Char(10)
+    AuditoriumTypeRef   auditoriumType @relation(fields: [auditorium_type], references: [auditorium_type])
+
+    @@map("auditorium")
+}
